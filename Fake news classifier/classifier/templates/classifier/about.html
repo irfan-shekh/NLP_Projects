@@ -1,0 +1,262 @@
+{% extends 'classifier/base.html' %}
+
+{% block title %}About - Fake News Classifier{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-body text-center p-4">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-info-circle text-primary me-3"></i>
+                    About Fake News Detector
+                </h1>
+                <p class="lead text-muted">
+                    Learn about the technology and methodology behind our fake news detection system
+                </p>
+            </div>
+        </div>
+
+        <!-- Technology Overview -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-microchip me-2"></i>Technology Stack
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="fw-semibold text-primary">
+                            <i class="fas fa-brain me-2"></i>Machine Learning
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Naive Bayes Classifier</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>TF-IDF Vectorization</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>N-gram Analysis (1-2 grams)</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Text Preprocessing Pipeline</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <h5 class="fw-semibold text-primary">
+                            <i class="fas fa-code me-2"></i>Web Development
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Django Framework</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Bootstrap 5 UI</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Responsive Design</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>RESTful API</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Performance -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-chart-line me-2"></i>Model Performance
+                </h3>
+                
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h2 class="text-primary fw-bold">{{ model_accuracy }}</h2>
+                                <p class="text-muted mb-0">Accuracy</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h2 class="text-success fw-bold">{{ training_samples }}</h2>
+                                <p class="text-muted mb-0">Training Samples</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h2 class="text-info fw-bold">5,000</h2>
+                                <p class="text-muted mb-0">Features</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h2 class="text-warning fw-bold">&lt;1s</h2>
+                                <p class="text-muted mb-0">Prediction Time</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-star me-2"></i>Key Features
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="fas fa-filter"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-semibold">Advanced Text Processing</h6>
+                                <p class="text-muted small mb-0">{{ features }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-semibold">High Accuracy Detection</h6>
+                                <p class="text-muted small mb-0">{{ algorithm }} for reliable predictions</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-semibold">Real-time Processing</h6>
+                                <p class="text-muted small mb-0">Instant predictions with confidence scores</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-semibold">Mobile Responsive</h6>
+                                <p class="text-muted small mb-0">Works seamlessly on all devices</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-cogs me-2"></i>How It Works
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                                 style="width: 30px; height: 30px; font-weight: bold;">1</div>
+                            <div class="ms-3">
+                                <h6 class="fw-semibold">Text Input</h6>
+                                <p class="text-muted small mb-0">User enters news article text or headline</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                                 style="width: 30px; height: 30px; font-weight: bold;">2</div>
+                            <div class="ms-3">
+                                <h6 class="fw-semibold">Preprocessing</h6>
+                                <p class="text-muted small mb-0">Text is cleaned, tokenized, and lemmatized</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                                 style="width: 30px; height: 30px; font-weight: bold;">3</div>
+                            <div class="ms-3">
+                                <h6 class="fw-semibold">Feature Extraction</h6>
+                                <p class="text-muted small mb-0">TF-IDF vectorization converts text to numerical features</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-start">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" 
+                                 style="width: 30px; height: 30px; font-weight: bold;">4</div>
+                            <div class="ms-3">
+                                <h6 class="fw-semibold">Classification</h6>
+                                <p class="text-muted small mb-0">Naive Bayes model predicts fake vs real with confidence</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Info -->
+        <div class="card">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-database me-2"></i>Training Dataset
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="text-muted">
+                            The model was trained on a comprehensive dataset of {{ training_samples }} news articles, 
+                            containing both real and fake news samples. The dataset includes news from various sources 
+                            and covers diverse topics to ensure robust performance across different domains.
+                        </p>
+                        
+                        <h6 class="fw-semibold mb-3">Dataset Characteristics:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-newspaper text-primary me-2"></i>News headlines and full articles</li>
+                            <li class="mb-2"><i class="fas fa-user text-primary me-2"></i>Author information</li>
+                            <li class="mb-2"><i class="fas fa-tag text-primary me-2"></i>Binary classification (Real/Fake)</li>
+                            <li class="mb-2"><i class="fas fa-balance-scale text-primary me-2"></i>Balanced dataset with equal samples</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-pie fa-3x text-primary mb-3"></i>
+                                <h6 class="fw-semibold">Data Distribution</h6>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-success" style="width: 50%">Real: 50%</div>
+                                    <div class="progress-bar bg-danger" style="width: 50%">Fake: 50%</div>
+                                </div>
+                                <small class="text-muted">Perfectly balanced dataset</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

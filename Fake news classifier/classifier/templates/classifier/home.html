@@ -1,0 +1,253 @@
+{% extends 'classifier/base.html' %}
+
+{% block title %}Fake News Classifier - Detect Real vs Fake News{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Header Card -->
+        <div class="card mb-4">
+            <div class="card-body text-center p-4">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-shield-alt text-primary me-3"></i>
+                    Fake News Detector
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Advanced AI-powered system to identify fake news with 89% accuracy
+                </p>
+                {% if not model_loaded %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Model is currently loading. Please refresh the page in a moment.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">
+                    <i class="fas fa-edit me-2"></i>Enter News Text
+                </h3>
+                
+                <form id="predictionForm">
+                    <div class="mb-3">
+                        <label for="newsText" class="form-label fw-semibold">
+                            <i class="fas fa-newspaper me-2"></i>News Article or Headline
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="newsText" 
+                            rows="6" 
+                            placeholder="Paste the news article text or headline here..."
+                            required
+                        ></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Enter at least 20 characters for accurate prediction
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-gradient btn-lg" id="predictBtn">
+                            <i class="fas fa-search me-2"></i>Analyze News
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading State -->
+                <div class="loading" id="loadingState">
+                    <div class="spinner"></div>
+                    <p class="text-muted">Analyzing text with AI...</p>
+                </div>
+
+                <!-- Results -->
+                <div id="predictionResult"></div>
+            </div>
+        </div>
+
+        <!-- Sample Texts -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-3">
+                    <i class="fas fa-lightbulb me-2"></i>Try Sample Texts
+                </h4>
+                <p class="text-muted mb-3">Click on any sample below to test the classifier:</p>
+                
+                {% for text in sample_texts %}
+                <div class="sample-text" onclick="setSampleText('{{ text|escapejs }}')">
+                    <small class="text-muted d-block mb-1">Sample {{ forloop.counter }}</small>
+                    {{ text|truncatechars:100 }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="card">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4 text-center">
+                    <i class="fas fa-star me-2"></i>Key Features
+                </h4>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5 class="fw-semibold">ML Powered</h5>
+                            <p class="text-muted small">Uses Naive Bayes with TF-IDF vectorization</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <h5 class="fw-semibold">Fast Analysis</h5>
+                            <p class="text-muted small">Get results in seconds with confidence scores</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5 class="fw-semibold">High Accuracy</h5>
+                            <p class="text-muted small">89% accuracy on 20,800 training samples</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('predictionForm');
+    const loadingState = document.getElementById('loadingState');
+    const resultDiv = document.getElementById('predictionResult');
+    const predictBtn = document.getElementById('predictBtn');
+    const newsText = document.getElementById('newsText');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const text = newsText.value.trim();
+        
+        if (text.length < 20) {
+            showAlert('Please enter at least 20 characters for accurate prediction.', 'warning');
+            return;
+        }
+
+        // Show loading state
+        loadingState.style.display = 'block';
+        resultDiv.innerHTML = '';
+        predictBtn.disabled = true;
+        predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+
+        try {
+            const response = await fetch('{% url "predict_news" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                displayResult(data);
+            } else {
+                showAlert(data.error || 'An error occurred during prediction.', 'danger');
+            }
+        } catch (error) {
+            showAlert('Network error. Please try again.', 'danger');
+        } finally {
+            loadingState.style.display = 'none';
+            predictBtn.disabled = false;
+            predictBtn.innerHTML = '<i class="fas fa-search me-2"></i>Analyze News';
+        }
+    });
+
+    function displayResult(data) {
+        const resultClass = data.prediction === 'FAKE' ? 'prediction-fake' : 'prediction-real';
+        const icon = data.prediction === 'FAKE' ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+        
+        resultDiv.innerHTML = `
+            <div class="prediction-result ${resultClass}">
+                <div class="mb-3">
+                    <i class="${icon} fa-3x mb-3"></i>
+                    <h2 class="mb-2">This news appears to be: <strong>${data.prediction}</strong></h2>
+                    <p class="mb-0">Confidence: ${data.confidence}%</p>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Real: ${data.real_confidence}%</span>
+                        <span>Fake: ${data.fake_confidence}%</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill ${data.prediction === 'FAKE' ? 'bg-danger' : 'bg-success'}" 
+                             style="width: ${data.confidence}%"></div>
+                    </div>
+                </div>
+                
+                <div class="text-start">
+                    <small>
+                        <strong>Analysis Details:</strong><br>
+                        Text Length: ${data.text_length} characters<br>
+                        Processed Features: ${data.processed_text}
+                    </small>
+                </div>
+            </div>
+        `;
+    }
+
+    function showAlert(message, type) {
+        resultDiv.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+    }
+
+    // Auto-resize textarea
+    newsText.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+});
+
+function setSampleText(text) {
+    document.getElementById('newsText').value = text;
+    document.getElementById('newsText').style.height = 'auto';
+    document.getElementById('newsText').style.height = document.getElementById('newsText').scrollHeight + 'px';
+    document.getElementById('newsText').focus();
+}
+
+// CSRF Token helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}
