@@ -16,7 +16,7 @@ A collection of end-to-end Natural Language Processing (NLP) projects, including
 
 ## 🛠️ Repository Structure
 
-`
+``
 NLP_Projects/
 ├── chatbot/
 │   ├── chatbot_app/
@@ -35,4 +35,4 @@ NLP_Projects/
 │   └── toxic_classifier/
 ├── .gitignore
 └── README.md
-`
+``
